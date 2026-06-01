@@ -2,6 +2,8 @@ import { render, screen, waitFor } from '../../test-utils';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import MainPage from '../MainPage';
+import store from '../../store';
+import { pokemonApi } from '../../services/pokemonApi';
 
 const originalFetch = globalThis.fetch;
 
@@ -15,6 +17,7 @@ describe('MainPage', () => {
   beforeEach(() => {
     window.localStorage.clear();
     globalThis.fetch = originalFetch;
+    store.dispatch(pokemonApi.util.resetApiState());
   });
 
   afterEach(() => {

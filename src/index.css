@@ -150,6 +150,8 @@ a {
 
 .search-panel {
   padding: 1.25rem;
+  /* gap: 1.25rem; */
+
 }
 
 .results-panel {
@@ -166,6 +168,7 @@ a {
   background: transparent;
   border: 0;
   box-shadow: none;
+  margin: 1.25rem 0;
 }
 
 .search input {
@@ -513,6 +516,35 @@ a {
   right: 1rem;
   bottom: 1rem;
   z-index: 120;
+}
+
+.btn-refresh {
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 1.25rem;
+  font-family: var(--font-pixel);
+  font-size: 0.55rem;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    transform 0.1s ease,
+    opacity 0.2s ease;
+}
+
+.btn-refresh:hover:not(:disabled) {
+  background: #c1121f;
+}
+
+.btn-refresh:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.btn-refresh:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
 }
 
 /* ── Pokemon Details Panel ──────────────────────────────── */
