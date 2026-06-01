@@ -1,6 +1,5 @@
 import { render, screen, waitFor } from '../../test-utils';
 import userEvent from '@testing-library/user-event';
-import { MemoryRouter } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import MainPage from '../MainPage';
 
@@ -25,9 +24,7 @@ describe('MainPage', () => {
 
   const renderMainPage = () => {
     return render(
-      <MemoryRouter initialEntries={['/?page=0']}>
-        <MainPage />
-      </MemoryRouter>
+      <MainPage />
     );
   };
 

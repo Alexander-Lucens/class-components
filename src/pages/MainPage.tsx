@@ -3,10 +3,11 @@ import { useEffect, useState } from "react";
 import Header from "../components/Header";
 import Search from "../components/Search";
 import CardList from "../components/CardList";
-import ErrorBoundary from "../components/ErrorBoundary";
+import ButtonComponent from "../components/ButtonComponent";
 import { fetchPokemonByTerm, fetchPokemonPage } from "../api/fetch-data-api";
 import type Pokemon from "../interfaces/Pokemon";
 import useLocalStorage from "../hooks/useLocalStorage";
+import { useAppContext } from "../context/useAppContext";
 
 const PAGE_SIZE = 20;
 
@@ -14,14 +15,14 @@ export default function MainPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
+  const { triggerError } = useAppContext();
   
   const isDetailsOpen = location.pathname.includes('/details/');
-  const currentPage = parseInt(searchParams.get("page") || "0", 10);
+  const currentPage = parseInt(searchParams.get("page") || "1", 10);
   
   const [results, setResults] = useState<Pokemon[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [throwError, setThrowError] = useState(false);
   const [hasNext, setHasNext] = useState(false);
   const [searchTerm, setSearchTerm] = useLocalStorage("searchTerm", "");
 
@@ -34,10 +35,10 @@ export default function MainPage() {
       if (trimmed) {
         const searchResults = await fetchPokemonByTerm(trimmed);
         setResults(searchResults);
-        setSearchParams({ page: "0" });
+        setSearchParams({ page: "1" });
         setHasNext(false);
       } else {
-        const { results: pageResults, hasNext: hasMorePages } = await fetchPokemonPage(pageNum, PAGE_SIZE);
+        const { results: pageResults, hasNext: hasMorePages } = await fetchPokemonPage((pageNum - 1), PAGE_SIZE);
         setResults(pageResults);
         setSearchParams({ page: pageNum.toString() });
         setHasNext(hasMorePages);
@@ -52,9 +53,41 @@ export default function MainPage() {
   };
 
   useEffect(() => {
-    fetchData(searchTerm, currentPage);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    let cancelled = false;
+
+    const loadInitialData = async () => {
+      const trimmed = searchTerm.trim();
+
+      try {
+        if (trimmed) {
+          const searchResults = await fetchPokemonByTerm(trimmed);
+          if (cancelled) return;
+          setResults(searchResults);
+          setSearchParams({ page: "1" });
+          setHasNext(false);
+        } else {
+          const { results: pageResults, hasNext: hasMorePages } = await fetchPokemonPage(currentPage - 1, PAGE_SIZE);
+          if (cancelled) return;
+          setResults(pageResults);
+          setSearchParams({ page: currentPage.toString() });
+          setHasNext(hasMorePages);
+        }
+      } catch (err) {
+        if (cancelled) return;
+        setError(err instanceof Error ? err.message : "Unknown error");
+        setResults([]);
+        setHasNext(false);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+
+    void loadInitialData();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [currentPage, searchTerm, setSearchParams]);
 
   const handleSearch = (term: string) => {
     setSearchTerm(term);
@@ -74,19 +107,13 @@ export default function MainPage() {
   };
 
   const prevPage = () => {
-    if (currentPage > 0) fetchData("", currentPage - 1);
+    if (currentPage > 1) fetchData("", currentPage - 1);
   };
 
-  const triggerError = () => setThrowError(true);
-  const handleBoundaryReset = () => setThrowError(false);
-
-  if (throwError) throw new Error("Test error triggered!");
-
   return (
-    <ErrorBoundary onReset={handleBoundaryReset}>
-      <div style={{ display: "flex", minHeight: "100vh", flexDirection: "column" }}>
+    <div style={{ display: "flex", minHeight: "100vh", flexDirection: "column" }}>
         <Header />
-        <div style={{ display: "flex", flex: 1 }}>
+        <div className="width-wrapper" style={{ display: "flex", flex: 1 }}>
           <main style={{ flex: 1, display: "flex", flexDirection: "column" }}>
             <section className="search-panel">
               <Search onSearch={handleSearch} />
@@ -100,12 +127,12 @@ export default function MainPage() {
                 onCardClick={handleCardClick}
               />
 
-              {!loading && !error && results.length > 0 && (
+              {!loading && results.length > 0 && (
                 <div className="pagination">
-                  <button onClick={prevPage} disabled={currentPage === 0}>
+                  <button onClick={prevPage} disabled={currentPage === 1}>
                     Prev
                   </button>
-                  <span>Page {currentPage + 1}</span>
+                  <span>Page {currentPage}</span>
                   <button onClick={nextPage} disabled={!hasNext}>
                     Next
                   </button>
@@ -113,9 +140,9 @@ export default function MainPage() {
               )}
             </section>
 
-            <button className="error-trigger" onClick={triggerError}>
+            <ButtonComponent className="error-trigger" onClick={triggerError}>
               Trigger Error
-            </button>
+            </ButtonComponent>
           </main>
 
           {isDetailsOpen && (
@@ -135,6 +162,5 @@ export default function MainPage() {
           )}
         </div>
       </div>
-    </ErrorBoundary>
   );
 }

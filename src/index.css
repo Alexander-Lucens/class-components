@@ -1,6 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Nunito:wght@400;600;700&display=swap");
 
 /* ── Variables ─────────────────────────────────────────── */
+
 :root {
   --bg: #1a1a2e;
   --bg-card: #16213e;
@@ -39,6 +40,12 @@ body {
   min-height: 100vh;
 }
 
+.width-wrapper {
+  max-width: 80vw;
+  margin: 0 auto;
+  width: 100%;
+}
+
 /* ── Header ─────────────────────────────────────────────── */
 .header {
   background: var(--bg-header);
@@ -70,6 +77,7 @@ body {
 .header__nav {
   display: flex;
   gap: 1.5rem;
+  align-items: center;
 }
 
 .header__nav a {
@@ -77,6 +85,43 @@ body {
   text-decoration: none;
   font-weight: 600;
   transition: color 0.2s;
+}
+
+.theme-switcher {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-left: 0.25rem;
+  padding: 0.25rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--bg-card) 82%, transparent);
+  box-shadow: var(--shadow);
+}
+
+.theme-switcher__button {
+  border: 0;
+  background: transparent;
+  color: var(--text-muted);
+  border-radius: 50%;
+  width: 2.5rem;
+  height: 2.5rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.15s ease;
+}
+
+.theme-switcher__button:hover {
+  transform: translateY(-1px);
+}
+
+.theme-switcher__button--active {
+  background: var(--accent);
+  color: white;
 }
 
 /* ── Main layout ─────────────────────────────────────────── */
@@ -173,6 +218,8 @@ a {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: 1.25rem;
+  min-width: 40vw;
+  width: 100%;
 }
 
 /* ── Card ────────────────────────────────────────────────── */
@@ -186,14 +233,41 @@ a {
   align-items: center;
   text-align: center;
   box-shadow: var(--shadow);
+  position: relative;
   transition:
     transform 0.2s ease,
-    border-color 0.2s ease;
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .card:hover {
   transform: translateY(-2px);
   border-color: var(--accent);
+}
+
+.card[data-selected="true"] {
+  border-color: var(--accent);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--accent) 35%, transparent),
+    var(--shadow);
+  animation: cardSelect 180ms ease-out;
+}
+
+.card__checkbox {
+  position: absolute;
+  top: 0.85rem;
+  left: 0.85rem;
+  width: 1.1rem;
+  height: 1.1rem;
+  margin: 0;
+  cursor: pointer;
+  accent-color: var(--accent);
+  transform-origin: center;
+  transition: transform 0.15s ease;
+}
+
+.card__checkbox:hover {
+  transform: scale(1.08);
 }
 
 .card img {
@@ -226,6 +300,90 @@ a {
   color: var(--text);
   font-size: 0.92rem;
   line-height: 1.5;
+}
+
+@keyframes cardSelect {
+  0% {
+    transform: scale(0.98);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.flyout {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 1rem;
+  display: flex;
+  justify-content: left;
+  pointer-events: none;
+  z-index: 200;
+  padding: 0 1rem;
+  max-width: 40vw;
+}
+
+.flyout__content {
+  pointer-events: auto;
+  width: fit-content;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem 1rem;
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--bg-card) 92%, transparent);
+  border: 1px solid var(--border);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.24);
+  backdrop-filter: blur(10px);
+  animation: flyoutEnter 220ms ease-out;
+}
+
+.flyout__count {
+  color: var(--text);
+  font-weight: 700;
+}
+
+.flyout__button {
+  border: 0;
+  border-radius: 999px;
+  padding: 0.6rem 0.95rem;
+  font-family: var(--font-pixel);
+  font-size: 0.56rem;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.flyout__button:hover {
+  transform: translateY(-1px);
+}
+
+.flyout__button--secondary {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.flyout__button--primary {
+  background: var(--accent);
+  color: white;
+  box-shadow: 0 8px 16px rgba(230, 57, 70, 0.24);
+}
+
+@keyframes flyoutEnter {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .pagination {
@@ -297,6 +455,7 @@ a {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
+  color: var(--text);
 }
 
 .no-results {
@@ -359,9 +518,7 @@ a {
 /* ── Pokemon Details Panel ──────────────────────────────── */
 .pokemon-details {
   background: var(--bg-card);
-  /* border: 2px solid var(--accent); */
   border-radius: var(--radius);
-  /* box-shadow: 0 8px 32px rgba(230, 57, 70, 0.25); */
   overflow: hidden;
   height: 100%;
   display: flex;
@@ -514,4 +671,32 @@ a {
     padding-left: 1rem;
     padding-right: 1rem;
   }
+
+  .theme-switcher {
+    gap: 0.25rem;
+    padding: 0.2rem;
+  }
+
+  .theme-switcher__button {
+    padding: 0.35rem 0.5rem;
+    font-size: 0.65rem;
+  }
+
+  .flyout__content {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
+/* Light theme overrides - applied when document.documentElement[data-theme="light"] */
+[data-theme="light"] {
+  --bg: #F4F7FB;
+  --bg-card: #FFFFFF;
+  --bg-header: #F0F4FA;
+  --accent: #E24D5B;
+  --accent-2: #D7B100;
+  --text: #182230;
+  --text-muted: #5F6B7A;
+  --border: #D7E0EA;
+  --shadow: 0 6px 20px rgba(23, 42, 58, 0.06);
 }

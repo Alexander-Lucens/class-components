@@ -5,24 +5,22 @@ import ErrorMessage from "../components/ErrorMessage";
 import { useParams } from "react-router-dom";
 
 export default function PokemonDetailsPage() {
-  const { pokemonId } = useParams();
+  const { pokemonName } = useParams();
   const [pokemon, setPokemon] = useState<Pokemon | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!pokemonId) {
-      setError("No Pokemon selected");
+    if (!pokemonName) {
       return;
     }
 
     const fetchPokemonDetails = async () => {
       setLoading(true);
-      setError(null);
 
       try {
         const response = await fetch(
-          `https://pokeapi.co/api/v2/pokemon/${encodeURIComponent(pokemonId)}/`
+          `https://pokeapi.co/api/v2/pokemon/${encodeURIComponent(pokemonName)}/`
         );
 
         if (!response.ok) {
@@ -35,6 +33,9 @@ export default function PokemonDetailsPage() {
         );
 
         if (!speciesResponse.ok) {
+          if (speciesResponse.status === 404) {
+            throw new Error(`Species not found for Pokémon: ${data.name}`);
+          }
           throw new Error(`Failed to fetch species: ${speciesResponse.status}`);
         }
 
@@ -53,16 +54,16 @@ export default function PokemonDetailsPage() {
           url: `https://pokeapi.co/api/v2/pokemon/${data.id}/`,
           description,
         });
-      } catch (err) {
-        const message = err instanceof Error ? err.message : "Unknown error";
-        setError(message);
+      } catch (error) {
+        setError(error instanceof Error ? error.message : "Unknown error");
+        setPokemon(null);
       } finally {
         setLoading(false);
       }
     };
 
     fetchPokemonDetails();
-  }, [pokemonId]);
+  }, [pokemonName]);
 
   const id = pokemon?.url?.split("/").filter(Boolean).pop();
   const image = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
@@ -75,9 +76,10 @@ export default function PokemonDetailsPage() {
     return <ErrorMessage message={error} />;
   }
 
-  if (!pokemon) {
-    return null;
+  if (pokemon === null) {
+    return <p className="no-results">No Pokémon details found.</p>;
   }
+
 
   return (
     <div className="pokemon-details">

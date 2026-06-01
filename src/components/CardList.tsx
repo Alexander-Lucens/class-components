@@ -1,7 +1,7 @@
 import Card from "./Card";
 import Spinner from "./Spinner";
-import type Pokemon from "../interfaces/Pokemon";
 import ErrorMessage from "./ErrorMessage";
+import type Pokemon from "../interfaces/Pokemon";
 
 interface CardListProps {
   results: Pokemon[];

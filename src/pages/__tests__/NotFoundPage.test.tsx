@@ -1,15 +1,12 @@
 import { render, screen } from '../../test-utils';
 import userEvent from '@testing-library/user-event';
-import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it } from 'vitest';
 import NotFoundPage from '../NotFoundPage';
 
 describe('NotFoundPage', () => {
   const renderNotFoundPage = () => {
     return render(
-      <MemoryRouter>
-        <NotFoundPage />
-      </MemoryRouter>
+      <NotFoundPage />
     );
   };
 

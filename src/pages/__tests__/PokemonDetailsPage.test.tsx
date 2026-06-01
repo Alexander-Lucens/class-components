@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { render, screen, waitFor } from '../../test-utils';
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
-import { MemoryRouter, Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import PokemonDetailsPage from '../PokemonDetailsPage';
 
 const originalFetch = globalThis.fetch;
@@ -30,11 +31,10 @@ describe('PokemonDetailsPage', () => {
 
   const renderWithRouter = (pokemonId: string) => {
     return render(
-      <MemoryRouter initialEntries={[`/details/${pokemonId}`]}>
-        <Routes>
-          <Route path="/details/:pokemonId" element={<PokemonDetailsPage />} />
-        </Routes>
-      </MemoryRouter>
+      <Routes>
+        <Route path="/details/:pokemonName" element={<PokemonDetailsPage />} />
+      </Routes>,
+      { initialEntries: [`/details/${pokemonId}`] }
     );
   };
 
@@ -230,7 +230,7 @@ describe('PokemonDetailsPage', () => {
     renderWithRouter('bulbasaur');
 
     await waitFor(() => {
-      expect(screen.getByText(/Failed to fetch species/i)).toBeInTheDocument();
+      expect(screen.getByText(/Species not found for Pokémon: /i)).toBeInTheDocument();
     });
   });
 
