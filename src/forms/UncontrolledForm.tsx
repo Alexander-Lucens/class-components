@@ -75,75 +75,84 @@ export default function UncontrolledForm({ onClose }: Props) {
 
   return (
     <form onSubmit={(e) => { void handleSubmit(e) }} noValidate>
-      <div>
-        <label htmlFor="uc-name">Name</label>
-        <input id="uc-name" type="text" ref={nameRef} />
-        {errors.name && <p role="alert">{errors.name}</p>}
+      <div className="form-group">
+        <label className="form-label" htmlFor="uc-name">Name</label>
+        <input className="form-input" id="uc-name" type="text" ref={nameRef} />
+        {errors.name && <p className="form-error" role="alert">{errors.name}</p>}
       </div>
 
-      <div>
-        <label htmlFor="uc-age">Age</label>
-        <input id="uc-age" type="number" ref={ageRef} />
-        {errors.age && <p role="alert">{errors.age}</p>}
+      <div className="form-group">
+        <label className="form-label" htmlFor="uc-age">Age</label>
+        <input className="form-input" id="uc-age" type="number" ref={ageRef} />
+        {errors.age && <p className="form-error" role="alert">{errors.age}</p>}
       </div>
 
-      <div>
-        <label htmlFor="uc-email">Email</label>
-        <input id="uc-email" type="email" ref={emailRef} />
-        {errors.email && <p role="alert">{errors.email}</p>}
+      <div className="form-group">
+        <label className="form-label" htmlFor="uc-email">Email</label>
+        <input className="form-input" id="uc-email" type="email" ref={emailRef} />
+        {errors.email && <p className="form-error" role="alert">{errors.email}</p>}
       </div>
 
-      <fieldset>
+      <fieldset className="form-fieldset">
         <legend>Gender</legend>
-        <label htmlFor="uc-male">Male</label>
-        <input id="uc-male" type="radio" name="gender" value="male" ref={genderMaleRef} />
-        <label htmlFor="uc-female">Female</label>
-        <input id="uc-female" type="radio" name="gender" value="female" ref={genderFemaleRef} />
-        <label htmlFor="uc-other">Other</label>
-        <input id="uc-other" type="radio" name="gender" value="other" ref={genderOtherRef} />
-        {errors.gender && <p role="alert">{errors.gender}</p>}
+        <div className="form-radio-group">
+          <label className="form-radio-label" htmlFor="uc-male">
+            <input id="uc-male" type="radio" name="gender" value="male" ref={genderMaleRef} />
+            Male
+          </label>
+          <label className="form-radio-label" htmlFor="uc-female">
+            <input id="uc-female" type="radio" name="gender" value="female" ref={genderFemaleRef} />
+            Female
+          </label>
+          <label className="form-radio-label" htmlFor="uc-other">
+            <input id="uc-other" type="radio" name="gender" value="other" ref={genderOtherRef} />
+            Other
+          </label>
+        </div>
+        {errors.gender && <p className="form-error" role="alert">{errors.gender}</p>}
       </fieldset>
 
-      <div>
-        <label htmlFor="uc-password">Password</label>
+      <div className="form-group">
+        <label className="form-label" htmlFor="uc-password">Password</label>
         <input
+          className="form-input"
           id="uc-password"
           type="password"
           ref={passwordRef}
           onChange={(e) => setPasswordValue(e.target.value)}
         />
-        {errors.password && <p role="alert">{errors.password}</p>}
+        {errors.password && <p className="form-error" role="alert">{errors.password}</p>}
         <PasswordStrength password={passwordValue} />
       </div>
 
-      <div>
-        <label htmlFor="uc-confirm-password">Confirm Password</label>
-        <input id="uc-confirm-password" type="password" ref={confirmPasswordRef} />
-        {errors.confirmPassword && <p role="alert">{errors.confirmPassword}</p>}
+      <div className="form-group">
+        <label className="form-label" htmlFor="uc-confirm-password">Confirm Password</label>
+        <input className="form-input" id="uc-confirm-password" type="password" ref={confirmPasswordRef} />
+        {errors.confirmPassword && <p className="form-error" role="alert">{errors.confirmPassword}</p>}
       </div>
 
-      <div>
-        <label htmlFor="uc-country">Country</label>
-        <input id="uc-country" type="text" list="uc-countries-list" ref={countryRef} />
+      <div className="form-group">
+        <label className="form-label" htmlFor="uc-country">Country</label>
+        <input className="form-input" id="uc-country" type="text" list="uc-countries-list" ref={countryRef} />
         <datalist id="uc-countries-list">
           {countries.map((c) => <option key={c} value={c} />)}
         </datalist>
-        {errors.country && <p role="alert">{errors.country}</p>}
+        {errors.country && <p className="form-error" role="alert">{errors.country}</p>}
       </div>
 
-      <div>
-        <label htmlFor="uc-image">Image (PNG/JPEG, max 5MB)</label>
-        <input id="uc-image" type="file" accept="image/png,image/jpeg" ref={imageRef} />
-        {errors.image && <p role="alert">{errors.image}</p>}
+      <div className="form-group">
+        <label className="form-label" htmlFor="uc-image">Image (PNG/JPEG, max 5MB)</label>
+        <input className="form-input" id="uc-image" type="file" accept="image/png,image/jpeg" ref={imageRef} />
+        {errors.image && <p className="form-error" role="alert">{errors.image}</p>}
       </div>
 
-      <div>
-        <label htmlFor="uc-terms">I agree to the Terms</label>
+      <div className="form-group form-checkbox-group">
         <input id="uc-terms" type="checkbox" ref={termsRef} />
-        {errors.terms && <p role="alert">{errors.terms}</p>}
+        <label className="form-label" htmlFor="uc-terms">I agree to the Terms</label>
+        {errors.terms && <p className="form-error" role="alert">{errors.terms}</p>}
       </div>
 
-      <button type="submit">Submit</button>
+      <button type="submit" className="form-submit">Submit</button>
     </form>
   )
 }

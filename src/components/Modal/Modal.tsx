@@ -32,12 +32,7 @@ export default function Modal({ isOpen, title, onClose, children }: ModalProps) 
   return createPortal(
     <div
       data-testid="modal-backdrop"
-      style={{
-        position: 'fixed', inset: 0,
-        background: 'rgba(0,0,0,0.5)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        zIndex: 1000,
-      }}
+      className="modal-backdrop"
       onClick={onClose}
     >
       <div
@@ -45,14 +40,10 @@ export default function Modal({ isOpen, title, onClose, children }: ModalProps) 
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
-        style={{
-          background: '#fff', borderRadius: 8, padding: 24,
-          minWidth: 320, maxWidth: 640, width: '100%',
-          maxHeight: '90vh', overflowY: 'auto',
-        }}
+        className="modal-dialog"
         onClick={(e) => e.stopPropagation()}
       >
-        <h2 id={titleId} style={{ marginTop: 0 }}>{title}</h2>
+        <h2 id={titleId} className="modal-dialog__title">{title}</h2>
         {children}
       </div>
     </div>,

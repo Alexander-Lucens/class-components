@@ -13,12 +13,12 @@ export default function PasswordStrength({ password }: Props) {
   if (!password) return null
 
   return (
-    <ul aria-label="Password strength" style={{ listStyle: 'none', padding: 0, margin: '4px 0 0' }}>
+    <ul className="password-strength" aria-label="Password strength">
       {criteria.map(({ label, test }) => (
         <li
           key={label}
+          className="password-strength__item"
           data-met={test(password)}
-          style={{ color: test(password) ? 'green' : 'gray', fontSize: 12 }}
         >
           {test(password) ? '✓' : '○'} {label}
         </li>

@@ -4,6 +4,7 @@ import { useAppDispatch } from '../hooks/redux'
 import { selectSubmissions, selectCountries, markRead } from '../features/formsSlice'
 import type { FormSubmission } from '../features/formsSlice'
 import Modal from '../components/Modal/Modal'
+import Header from '../components/Header'
 import UncontrolledForm from '../forms/UncontrolledForm'
 import HookForm from '../forms/HookForm'
 
@@ -27,70 +28,69 @@ export default function FormsPage() {
   void countries
 
   return (
-    <div style={{ padding: 24 }}>
-      <h1>Forms</h1>
+    <div style={{ display: 'flex', minHeight: '100vh', flexDirection: 'column' }}>
+      <Header />
+      <main className="forms-page">
+        <div className="forms-page__header">
+          <h1 className="forms-page__title">Forms</h1>
+          <a href="/" className="forms-page__back">← Back to Home</a>
+        </div>
 
-      <div style={{ display: 'flex', gap: 12, marginBottom: 32 }}>
-        <button onClick={() => setActiveModal('uncontrolled')}>Open Uncontrolled Form</button>
-        <button onClick={() => setActiveModal('hookform')}>Open Hook Form</button>
-      </div>
+        <div className="forms-page__actions">
+          <button className="forms-page__open-btn" onClick={() => setActiveModal('uncontrolled')}>
+            Open Uncontrolled Form
+          </button>
+          <button className="forms-page__open-btn" onClick={() => setActiveModal('hookform')}>
+            Open Hook Form
+          </button>
+        </div>
 
-      <Modal
-        isOpen={activeModal === 'uncontrolled'}
-        title="Uncontrolled Form"
-        onClose={() => setActiveModal(null)}
-      >
-        <UncontrolledForm onClose={() => setActiveModal(null)} />
-      </Modal>
+        <Modal
+          isOpen={activeModal === 'uncontrolled'}
+          title="Uncontrolled Form"
+          onClose={() => setActiveModal(null)}
+        >
+          <UncontrolledForm onClose={() => setActiveModal(null)} />
+        </Modal>
 
-      <Modal
-        isOpen={activeModal === 'hookform'}
-        title="Hook Form"
-        onClose={() => setActiveModal(null)}
-      >
-        <HookForm onClose={() => setActiveModal(null)} />
-      </Modal>
+        <Modal
+          isOpen={activeModal === 'hookform'}
+          title="Hook Form"
+          onClose={() => setActiveModal(null)}
+        >
+          <HookForm onClose={() => setActiveModal(null)} />
+        </Modal>
 
-      {submissions.length === 0 ? (
-        <p>No submissions yet</p>
-      ) : (
-        <ul style={{ listStyle: 'none', padding: 0 }}>
-          {submissions.map((s) => (
-            <SubmissionCard key={s.id} submission={s} />
-          ))}
-        </ul>
-      )}
+        {submissions.length === 0 ? (
+          <p className="forms-page__empty">No submissions yet</p>
+        ) : (
+          <ul className="submissions-list">
+            {submissions.map((s) => (
+              <SubmissionCard key={s.id} submission={s} />
+            ))}
+          </ul>
+        )}
+      </main>
     </div>
   )
 }
 
 function SubmissionCard({ submission: s }: { submission: FormSubmission }) {
   return (
-    <li
-      className={s.isNew ? 'submission-card submission-card--new' : 'submission-card'}
-      style={{
-        border: '1px solid',
-        borderColor: s.isNew ? '#4CAF50' : '#ccc',
-        borderRadius: 8,
-        padding: 16,
-        marginBottom: 12,
-        display: 'flex',
-        gap: 16,
-        alignItems: 'flex-start',
-      }}
-    >
+    <li className={`submission-card${s.isNew ? ' submission-card--new' : ''}`}>
       {s.image && (
         <img
           src={s.image}
           alt={`${s.name} avatar`}
-          style={{ width: 64, height: 64, objectFit: 'cover', borderRadius: 4 }}
+          className="submission-card__image"
         />
       )}
-      <div>
-        {s.isNew && <span style={{ color: '#4CAF50', fontWeight: 'bold', marginRight: 8 }}>NEW</span>}
-        <strong>{s.name}</strong>, age {s.age}
-        <br />
-        {s.email} · {s.gender} · {s.country}
+      <div className="submission-card__info">
+        {s.isNew && <span className="submission-card__badge">NEW</span>}
+        <div className="submission-card__name">{s.name}</div>
+        <div className="submission-card__meta">
+          Age {s.age} · {s.email} · {s.gender} · {s.country}
+        </div>
       </div>
     </li>
   )
