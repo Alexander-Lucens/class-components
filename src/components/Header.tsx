@@ -27,6 +27,9 @@ export default function Header() {
             <a href="/" style={{ marginRight: "20px", textDecoration: "none" }}>
               Home
             </a>
+            <a href="/forms" style={{ marginRight: "20px", textDecoration: "none" }}>
+              Forms
+            </a>
             <a href="/about" style={{ textDecoration: "none" }}>
               About
             </a>

@@ -20,6 +20,10 @@ Class-components React app built with Vite and TypeScript.
 ```bash
 npm install
 ```
+## Create your `.env`
+```sh
+Use `.env.example` as example or just removing last part
+````
 
 ## Run locally
 

@@ -1,4 +1,5 @@
 import type Pokemon from "../interfaces/Pokemon";
+import type { FormsState } from "../features/formsSlice";
 
 export interface CounterState {
   value: number;
@@ -11,4 +12,5 @@ export interface SelectionState {
 export interface RootState {
   counter: CounterState;
   selection: SelectionState;
+  forms: FormsState;
 }

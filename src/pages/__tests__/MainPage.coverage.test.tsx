@@ -3,6 +3,8 @@ import { act } from "@testing-library/react";
 import { render, screen, waitFor } from "../../test-utils";
 import MainPage from "../MainPage";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import store from "../../store";
+import { pokemonApi } from "../../services/pokemonApi";
 
 const apiMocks = vi.hoisted(() => ({
   fetchPokemonPage: vi.fn(),
@@ -25,6 +27,7 @@ describe("MainPage coverage branches", () => {
     localStorage.clear();
     apiMocks.fetchPokemonPage.mockReset();
     apiMocks.fetchPokemonByTerm.mockReset();
+    store.dispatch(pokemonApi.util.resetApiState());
   });
 
   it("navigates to details and back from a card", async () => {
