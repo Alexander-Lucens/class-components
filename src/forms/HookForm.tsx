@@ -1,4 +1,4 @@
-import { useForm } from 'react-hook-form'
+import { useForm, type Resolver } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useSelector } from 'react-redux'
 import { useAppDispatch } from '../hooks/redux'
@@ -22,7 +22,7 @@ export default function HookForm({ onClose }: Props) {
     watch,
     formState: { errors, isValid },
   } = useForm<FormValues>({
-    resolver: yupResolver(formSchema),
+    resolver: yupResolver(formSchema) as Resolver<FormValues>,
     context: { countries },
     mode: 'onChange',
   })

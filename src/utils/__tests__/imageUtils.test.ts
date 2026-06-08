@@ -20,7 +20,7 @@ describe('fileToBase64', () => {
   it('rejects when FileReader fires an error', async () => {
     const file = new File(['x'], 'test.png', { type: 'image/png' })
     vi.spyOn(FileReader.prototype, 'readAsDataURL').mockImplementationOnce(function (this: FileReader) {
-      setTimeout(() => this.onerror?.(new ProgressEvent('error')))
+      setTimeout(() => this.onerror?.(new ProgressEvent('error') as ProgressEvent<FileReader>))
     })
     await expect(fileToBase64(file)).rejects.toThrow('Failed to read file')
   })

@@ -40,7 +40,7 @@ export const formSchema = yup.object({
     .oneOf([true], 'You must accept the terms')
     .required('You must accept the terms'),
   image: yup
-    .mixed<FileList | File | null>()
+    .mixed<FileList | File>()
     .nullable()
     .test('image-required', 'Image is required', (v) => {
       if (v instanceof FileList) return v.length > 0
