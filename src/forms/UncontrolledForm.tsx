@@ -36,7 +36,8 @@ export default function UncontrolledForm({ onClose }: Props) {
   const getGender = () => {
     if (genderMaleRef.current?.checked) return 'male'
     if (genderFemaleRef.current?.checked) return 'female'
-    return 'other'
+    if (genderOtherRef.current?.checked) return 'other'
+    return ''
   }
 
   const handleSubmit = async (e: React.FormEvent) => {

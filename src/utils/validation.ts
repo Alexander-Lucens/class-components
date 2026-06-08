@@ -45,7 +45,7 @@ export const formSchema = yup.object({
     .test('image-required', 'Image is required', (v) => {
       if (v instanceof FileList) return v.length > 0
       if (v instanceof File) return true
-      return false
+      return false;
     })
     .test('image-type', 'Only PNG and JPEG images are allowed', (v) => {
       const file = v instanceof FileList ? v[0] : (v as File | null | undefined)

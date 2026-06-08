@@ -42,10 +42,13 @@ const formsSlice = createSlice({
       const item = state.submissions.find((s) => s.id === action.payload)
       if (item) item.isNew = false
     },
+    clearSubmissions(state) {
+      state.submissions = []
+    },
   },
 })
 
-export const { addSubmission, markRead } = formsSlice.actions
+export const { addSubmission, markRead, clearSubmissions } = formsSlice.actions
 
 export const selectSubmissions = (state: RootState) => state.forms.submissions
 export const selectCountries = (state: RootState) => state.forms.countries

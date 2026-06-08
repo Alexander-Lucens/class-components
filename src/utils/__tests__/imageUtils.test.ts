@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { fileToBase64 } from '../imageUtils'
 
 describe('fileToBase64', () => {
@@ -15,5 +15,13 @@ describe('fileToBase64', () => {
     const file2 = new File(['bbb'], 'b.png', { type: 'image/png' })
     const [r1, r2] = await Promise.all([fileToBase64(file1), fileToBase64(file2)])
     expect(r1).not.toBe(r2)
+  })
+
+  it('rejects when FileReader fires an error', async () => {
+    const file = new File(['x'], 'test.png', { type: 'image/png' })
+    vi.spyOn(FileReader.prototype, 'readAsDataURL').mockImplementationOnce(function (this: FileReader) {
+      setTimeout(() => this.onerror?.(new ProgressEvent('error')))
+    })
+    await expect(fileToBase64(file)).rejects.toThrow('Failed to read file')
   })
 })

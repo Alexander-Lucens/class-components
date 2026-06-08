@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import formsReducer, {
   addSubmission,
   markRead,
+  clearSubmissions,
   selectSubmissions,
   selectCountries,
 } from '../formsSlice'
@@ -64,5 +65,18 @@ describe('formsSlice', () => {
   it('initial state has a non-empty countries list', () => {
     const state = formsReducer(undefined, { type: '@@INIT' })
     expect(state.countries.length).toBeGreaterThan(0)
+  })
+
+  it('clearSubmissions empties the submissions array', () => {
+    let state = formsReducer(baseState, addSubmission(sampleSubmission))
+    expect(state.submissions).toHaveLength(1)
+    state = formsReducer(state, clearSubmissions())
+    expect(state.submissions).toHaveLength(0)
+  })
+
+  it('markRead with non-existent id changes nothing', () => {
+    let state = formsReducer(baseState, addSubmission(sampleSubmission))
+    state = formsReducer(state, markRead('does-not-exist'))
+    expect(state.submissions[0].isNew).toBe(true)
   })
 })
