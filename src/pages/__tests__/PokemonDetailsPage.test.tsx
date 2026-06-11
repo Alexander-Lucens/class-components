@@ -3,6 +3,8 @@ import { render, screen, waitFor } from '../../test-utils';
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 import { Routes, Route } from 'react-router-dom';
 import PokemonDetailsPage from '../PokemonDetailsPage';
+import store from '../../store';
+import { pokemonApi } from '../../services/pokemonApi';
 
 const originalFetch = globalThis.fetch;
 
@@ -23,6 +25,7 @@ const mockSpeciesData = {
 describe('PokemonDetailsPage', () => {
   beforeEach(() => {
     globalThis.fetch = originalFetch;
+    store.dispatch(pokemonApi.util.resetApiState());
   });
 
   afterEach(() => {
@@ -230,7 +233,7 @@ describe('PokemonDetailsPage', () => {
     renderWithRouter('bulbasaur');
 
     await waitFor(() => {
-      expect(screen.getByText(/Species not found for Pokémon: /i)).toBeInTheDocument();
+      expect(screen.getByText(/Server error: 404/i)).toBeInTheDocument();
     });
   });
 
@@ -271,7 +274,7 @@ describe('PokemonDetailsPage', () => {
     renderWithRouter('unknown');
 
     await waitFor(() => {
-      expect(screen.getByText(/Failed to fetch Pokemon/i)).toBeInTheDocument();
+      expect(screen.getByText(/Server error: 404/i)).toBeInTheDocument();
     });
   });
 
