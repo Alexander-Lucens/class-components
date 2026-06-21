@@ -1,29 +1,28 @@
-import type { ReactElement, ReactNode } from 'react'
-import { render as rtlRender, type RenderOptions } from '@testing-library/react'
-import { MemoryRouter } from 'react-router-dom'
-import { AppProvider } from './context/AppContext'
+import type { ReactElement, ReactNode } from "react";
+import { render as rtlRender, type RenderOptions } from "@testing-library/react";
+import { Provider } from "react-redux";
+import { NextIntlClientProvider } from "next-intl";
+import { makeStore, type AppStore } from "./store";
+import messages from "../messages/en.json";
 
-interface CustomRenderOptions extends RenderOptions {
-  initialEntries?: string[]
+interface CustomRenderOptions extends Omit<RenderOptions, "wrapper"> {
+  store?: AppStore;
 }
 
-const AllProviders = ({ children, initialEntries }: { children?: ReactNode; initialEntries?: string[] }) => {
-  return (
-    <AppProvider>
-      <MemoryRouter initialEntries={initialEntries || ['/']}>
-        {children}
-      </MemoryRouter>
-    </AppProvider>
-  )
+function renderWithProviders(
+  ui: ReactElement,
+  { store = makeStore(), ...options }: CustomRenderOptions = {},
+) {
+  function Wrapper({ children }: { children: ReactNode }) {
+    return (
+      <NextIntlClientProvider locale="en" messages={messages}>
+        <Provider store={store}>{children}</Provider>
+      </NextIntlClientProvider>
+    );
+  }
+
+  return { store, ...rtlRender(ui, { wrapper: Wrapper, ...options }) };
 }
 
-const render = (ui: ReactElement, options: CustomRenderOptions = {}) => {
-  const { initialEntries, ...renderOptions } = options
-  return rtlRender(ui, {
-    wrapper: ({ children }) => <AllProviders initialEntries={initialEntries}>{children}</AllProviders>,
-    ...renderOptions,
-  })
-}
-
-export * from '@testing-library/react'
-export { render }
+export * from "@testing-library/react";
+export { renderWithProviders as render };

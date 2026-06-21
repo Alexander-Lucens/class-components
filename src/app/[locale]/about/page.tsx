@@ -10,19 +10,17 @@ type Props = {
   params: Promise<{ locale: string }>;
 };
 
-const externalLink =
-  (href: string) =>
-  (chunks: ReactNode) => (
-    <a href={href} target="_blank" rel="noopener noreferrer">
-      {chunks}
-    </a>
-  );
-
 export default async function AboutPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
 
   const t = await getTranslations("About");
+
+  const link = (href: string) => (chunks: ReactNode) => (
+    <a href={href} target="_blank" rel="noopener noreferrer">
+      {chunks}
+    </a>
+  );
 
   return (
     <main className="width-wrapper">
@@ -33,22 +31,18 @@ export default async function AboutPage({ params }: Props) {
             <h3>{t("courseHeading")}</h3>
             <p>
               {t.rich("course", {
-                link: externalLink("https://rs.school/courses/reactjs"),
+                link: link("https://rs.school/courses/reactjs"),
               })}
             </p>
 
             <h3>{t("apiHeading")}</h3>
             <p>
-              {t.rich("api", {
-                link: externalLink("https://pokeapi.co"),
-              })}
+              {t.rich("api", { link: link("https://pokeapi.co") })}
             </p>
 
             <h3>{t("authorHeading")}</h3>
             <p>
-              {t.rich("author", {
-                link: externalLink("https://github.com/olucens/"),
-              })}
+              {t.rich("author", { link: link("https://github.com/olucens/") })}
             </p>
           </div>
         </div>

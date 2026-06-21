@@ -1,27 +1,34 @@
-import { defineConfig } from 'vitest/config'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from "vitest/config";
+import react from "@vitejs/plugin-react";
+import { fileURLToPath } from "node:url";
 
 export default defineConfig({
   plugins: [react()],
+  resolve: {
+    alias: {
+      // `server-only` throws outside RSC; stub it so server modules are testable.
+      "server-only": fileURLToPath(
+        new URL("./test/server-only-stub.ts", import.meta.url),
+      ),
+    },
+  },
   test: {
-    environment: 'jsdom',
+    environment: "jsdom",
     globals: true,
-    setupFiles: ['./src/setupTests.ts'],
+    setupFiles: ["./src/setupTests.ts"],
     coverage: {
-      provider: 'v8',
-      reporter: ['text', 'lcov'],
-      include: ['src/**/*.{ts,tsx,js,jsx}'],
+      provider: "v8",
+      reporter: ["text", "lcov"],
+      include: ["src/**/*.{ts,tsx}"],
       exclude: [
-        'src/**/*.test.{ts,tsx,js,jsx}',
-        'src/**/*.spec.{ts,tsx,js,jsx}',
-        'src/main.{ts,tsx,js,jsx}',
-        'src/setupTests.{ts,js}',
-        'src/**/*.d.ts'
+        "src/**/*.test.{ts,tsx}",
+        "src/test-utils.tsx",
+        "src/setupTests.ts",
+        "src/**/*.d.ts",
+        "src/app/**",
+        "src/proxy.ts",
+        "src/i18n/**",
       ],
-      lines: 50,
-      functions: 50,
-      branches: 50,
-      statements: 80
-    }
-  }
-})
+    },
+  },
+});

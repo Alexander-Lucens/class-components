@@ -732,3 +732,76 @@ a {
   --border: #D7E0EA;
   --shadow: 0 6px 20px rgba(23, 42, 58, 0.06);
 }
+
+/* ── Next.js migration: layout & new elements ─────────────── */
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.page-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.card__link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  text-decoration: none;
+  color: inherit;
+}
+
+.card--active {
+  border-color: var(--accent);
+  box-shadow:
+    0 0 0 2px color-mix(in srgb, var(--accent) 45%, transparent),
+    var(--shadow);
+}
+
+.details-wrapper {
+  flex: 0 0 38%;
+}
+
+.details-wrapper__close-btn {
+  text-decoration: none;
+}
+
+.details-empty {
+  margin: auto;
+  padding: 2rem;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.locale-switcher {
+  background: var(--bg-card);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.35rem 0.5rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.flyout__form {
+  margin: 0;
+  display: inline;
+}
+
+.back-home {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background: var(--accent);
+  color: #fff;
+  border-radius: var(--radius);
+  text-decoration: none;
+}
+
+.back-home:hover {
+  background: #c1121f;
+}
