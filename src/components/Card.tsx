@@ -1,6 +1,7 @@
 "use client";
 
 import type { ChangeEvent } from "react";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Link } from "../i18n/navigation";
 import { useAppDispatch, useAppSelector } from "../hooks/redux";
@@ -48,7 +49,13 @@ export default function Card({
         className="card__checkbox"
       />
       <Link href={{ pathname: "/", query: detailsQuery }} className="card__link">
-        <img src={image} alt={name} />
+        <Image
+          src={image}
+          alt={name}
+          width={96}
+          height={96}
+          className="card__image"
+        />
         <div className="card__info">
           <h3 className="card__name">{name}</h3>
           <p className="card__description">#{id}</p>

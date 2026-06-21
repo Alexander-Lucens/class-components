@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { getPokemonByName } from "../lib/pokemon";
 import ErrorMessage from "./ErrorMessage";
@@ -18,9 +19,11 @@ export default async function DetailsPanel({ name }: { name: string }) {
   return (
     <div className="pokemon-details">
       <div className="pokemon-details__content">
-        <img
+        <Image
           src={image}
           alt={pokemon.name}
+          width={200}
+          height={200}
           className="pokemon-details__image"
         />
         <div className="pokemon-details__info">
