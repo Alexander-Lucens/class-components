@@ -1,10 +1,13 @@
 import type { ReactNode } from "react";
 import "./globals.css";
+import StoreProvider from "./StoreProvider";
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <StoreProvider>{children}</StoreProvider>
+      </body>
     </html>
   );
 }
