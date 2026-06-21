@@ -4,12 +4,13 @@ import userEvent from "@testing-library/user-event";
 import ThemeProvider, { useTheme } from "../ThemeContext";
 
 function Consumer() {
-  const { theme, resolved, setTheme } = useTheme();
+  const { theme, resolved, setTheme, toggle } = useTheme();
   return (
     <div>
       <span data-testid="theme">{theme}</span>
       <span data-testid="resolved">{resolved}</span>
       <button onClick={() => setTheme("dark")}>set-dark</button>
+      <button onClick={toggle}>toggle</button>
     </div>
   );
 }
@@ -46,6 +47,26 @@ describe("ThemeContext", () => {
     expect(localStorage.getItem("app_theme")).toBe("dark");
     await waitFor(() =>
       expect(document.documentElement.getAttribute("data-theme")).toBe("dark"),
+    );
+  });
+
+  it("toggles between light and dark", async () => {
+    const user = userEvent.setup();
+    render(
+      <ThemeProvider>
+        <Consumer />
+      </ThemeProvider>,
+    );
+
+    // default resolved is "light" (system preference mocked to light)
+    await user.click(screen.getByText("toggle"));
+    await waitFor(() =>
+      expect(document.documentElement.getAttribute("data-theme")).toBe("dark"),
+    );
+
+    await user.click(screen.getByText("toggle"));
+    await waitFor(() =>
+      expect(document.documentElement.getAttribute("data-theme")).toBe("light"),
     );
   });
 

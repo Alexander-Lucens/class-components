@@ -23,6 +23,18 @@ describe("buildCsv", () => {
     expect(csv).toContain('"a, ""b""\nc"');
   });
 
+  it("escapes a quote-only value", () => {
+    expect(buildCsv([{ name: "q", url: "/q", description: 'has "quote"' }])).toContain(
+      '"has ""quote"""',
+    );
+  });
+
+  it("escapes a newline-only value", () => {
+    expect(
+      buildCsv([{ name: "n", url: "/n", description: "line1\nline2" }]),
+    ).toContain('"line1\nline2"');
+  });
+
   it("returns only the header for an empty list", () => {
     expect(buildCsv([])).toBe("name,description,url");
   });

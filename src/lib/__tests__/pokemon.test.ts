@@ -58,4 +58,24 @@ describe("lib/pokemon", () => {
     );
     expect(await searchPokemon("nope")).toEqual([]);
   });
+
+  it("searchPokemon returns an empty array for a blank term without fetching", async () => {
+    const fetchSpy = vi.fn();
+    vi.stubGlobal("fetch", fetchSpy);
+    expect(await searchPokemon("   ")).toEqual([]);
+    expect(fetchSpy).not.toHaveBeenCalled();
+  });
+
+  it("falls back when there is no English description", async () => {
+    vi.stubGlobal(
+      "fetch",
+      mockFetchSequence(detail, {
+        flavor_text_entries: [
+          { flavor_text: "x", language: { name: "fr" } },
+        ],
+      }),
+    );
+    const pokemon = await getPokemonByName("pikachu");
+    expect(pokemon.description).toBe("No description available.");
+  });
 });
