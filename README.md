@@ -1,18 +1,27 @@
-# PokéSearch
+# PokéSearch — Next.js (App Router, SSR/SSG)
 
-Class-components React app built with Vite and TypeScript.
+A Pokémon search application built with **Next.js (App Router)**, **TypeScript**,
+**next-intl** and **Redux Toolkit**. Migrated from a Vite + React Router SPA to a
+server-first Next.js app.
 
-## What it does
+## Features
 
-- Uses class components only
-- Loads Pokémon from the public PokeAPI
-- Supports initial load, server-side search, and pagination
-- Saves the last search term in `localStorage`
-- Shows loading, error, and error-boundary states
+- File-based routing with the **App Router** and a locale segment (`/[locale]`)
+- **Internationalization** with `next-intl` (English + Deutsch) and a client-side
+  language switcher; all navigation uses `createNavigation` links
+- **Server-rendered search results** (server components read `searchParams` and
+  fetch on the server); search runs through a **Server Action** (`useActionState`)
+- **Server-side details panel** — selecting a card fetches its data on the server
+- **Statically generated** About page (SSG, server component only)
+- Localized **404** page for unknown routes
+- All images rendered through **`next/image`**
+- **CSV export generated and served by the server** via a route handler
+- Hand-rolled **theme switcher** (light/dark/system) via React Context + localStorage
+- Card selection persisted in `localStorage` via Redux Toolkit
 
 ## Requirements
 
-- Node.js 18+ recommended
+- Node.js 18+ (developed on Node 24)
 - npm
 
 ## Install
@@ -21,55 +30,33 @@ Class-components React app built with Vite and TypeScript.
 npm install
 ```
 
+## Environment
+
+Copy `.env.example` to `.env` (optional). `REVALIDATE_SECONDS` controls how long
+server-side PokeAPI fetches are cached (defaults to 60).
+
 ## Run locally
 
 ```bash
 npm run dev
 ```
 
-Then open the URL shown by Vite, usually:
+Then open http://localhost:3000
 
-```text
-http://localhost:5173
-```
+## Scripts
 
-## Build
+| Command | Description |
+| --- | --- |
+| `npm run dev` | Start the dev server |
+| `npm run build` | Production build |
+| `npm run start` | Run the production build |
+| `npm run lint` | ESLint (Next.js + TypeScript) |
+| `npm run type-check` | `tsc --noEmit` |
+| `npm run format:fix` | Prettier |
+| `npm run test` | Run the vitest suite |
+| `npm run test:coverage` | Tests with coverage |
 
-```bash
-npm run build
-```
+## Deployment
 
-## Preview production build
-
-```bash
-npm run preview
-```
-
-## Lint
-
-```bash
-npm run lint
-```
-
-## Format
-
-```bash
-npm run format:fix
-```
-
-## Run tests
-
-### Run all vitest in general
-```bash
-npm run test
-```
-
-### Run test coverage
-```bash
-npm run test:coverage
-```
-
-### Run vitest with graphical ui in browser
-```bash
-npm run test:ui
-```
+Optimized for **Vercel** (zero-config: server actions, SSR, ISR and
+`next/image` work out of the box). Push the repository and import it on Vercel.

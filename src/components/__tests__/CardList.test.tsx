@@ -1,29 +1,57 @@
-import { render, screen } from '../../test-utils'
-import CardList from '../CardList'
-import { describe, expect, it } from 'vitest'
+import type { ReactNode } from "react";
+import { describe, expect, it, vi } from "vitest";
+import { render, screen } from "../../test-utils";
+import CardList from "../CardList";
+import type Pokemon from "../../interfaces/Pokemon";
 
+vi.mock("next-intl/server", () => ({
+  getTranslations: async () => (key: string) => key,
+}));
 
-const sample = [{ name: 'bulbasaur', url: 'https://pokeapi.co/api/v2/pokemon/1/', description: 'desc' }]
+vi.mock("../../i18n/navigation", () => ({
+  Link: ({ children, className }: { children?: ReactNode; className?: string }) => (
+    <a className={className}>{children}</a>
+  ),
+}));
 
-describe('CardList', () => {
-  it('shows spinner when loading', () => {
-    const { container } = render(<CardList results={[]} loading={true} error={null} />)
-    expect(container.querySelector('.spinner__circle')).toBeInTheDocument()
-  })
+vi.mock("next/image", () => ({
+  default: ({ alt, src }: { alt: string; src: string }) => (
+    <img alt={alt} src={src} />
+  ),
+}));
 
-  it('shows error when error present', () => {
-    render(<CardList results={[]} loading={false} error={'Server failed'} />)
-    expect(screen.getByText(/Something went wrong/i)).toBeInTheDocument()
-    expect(screen.getByText('Server failed')).toBeInTheDocument()
-  })
+const results: Pokemon[] = [
+  {
+    name: "bulbasaur",
+    url: "https://pokeapi.co/api/v2/pokemon/1/",
+    description: "Seed Pokémon",
+  },
+];
 
-  it('shows no-results when empty', () => {
-    render(<CardList results={[]} loading={false} error={null} />)
-    expect(screen.getByText(/No pokémon found/i)).toBeInTheDocument()
-  })
+describe("CardList", () => {
+  it("renders the empty state when there are no results", async () => {
+    render(await CardList({ results: [], page: 1, query: "", selected: "" }));
+    expect(screen.getByText("noResults")).toBeInTheDocument();
+  });
 
-  it('renders cards for results', () => {
-    render(<CardList results={sample} loading={false} error={null} />)
-    expect(screen.getByText(/bulbasaur/i)).toBeInTheDocument()
-  })
-})
+  it("renders cards and marks the selected one active", async () => {
+    const { container } = render(
+      await CardList({
+        results,
+        page: 2,
+        query: "bulba",
+        selected: "bulbasaur",
+      }),
+    );
+    expect(screen.getByText("bulbasaur")).toBeInTheDocument();
+    expect(container.querySelector(".card--active")).not.toBeNull();
+  });
+
+  it("renders cards with a default query on page 1 without a search term", async () => {
+    const { container } = render(
+      await CardList({ results, page: 1, query: "", selected: "" }),
+    );
+    expect(screen.getByText("bulbasaur")).toBeInTheDocument();
+    expect(container.querySelector(".card--active")).toBeNull();
+  });
+});

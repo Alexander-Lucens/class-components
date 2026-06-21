@@ -1,35 +1,15 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type Pokemon from "../interfaces/Pokemon";
-import type { RootState } from "../types/store";
+import type { RootState } from "../store";
 
 interface SelectionState {
   items: Record<string, Pokemon>;
 }
 
-const STORAGE_KEY = "selected_pokemon";
-
-function readInitialState(): SelectionState {
-  if (typeof window === "undefined") {
-    return { items: {} };
-  }
-
-  try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (!raw) return { items: {} };
-
-    const parsed = JSON.parse(raw) as Pokemon[];
-    return {
-      items: parsed.reduce<Record<string, Pokemon>>((acc, pokemon) => {
-        acc[pokemon.name] = pokemon;
-        return acc;
-      }, {}),
-    };
-  } catch {
-    return { items: {} };
-  }
-}
-
-const initialState: SelectionState = readInitialState();
+// Start empty on both server and first client render to avoid hydration
+// mismatches. The persisted selection is loaded post-mount via hydrateSelection
+// (see StoreProvider).
+const initialState: SelectionState = { items: {} };
 
 const selectionSlice = createSlice({
   name: "selection",

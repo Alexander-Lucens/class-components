@@ -1,4 +1,12 @@
-import { createContext, useContext, useEffect, useState } from "react";
+"use client";
+
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from "react";
 
 type Theme = "light" | "dark" | "system";
 
@@ -11,68 +19,65 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-const STORAGE_KEY = "app_theme";
+export const THEME_STORAGE_KEY = "app_theme";
 
-export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>(() => {
+function getSystemPrefersDark(): boolean {
+  if (typeof window === "undefined" || !window.matchMedia) return false;
+  return window.matchMedia("(prefers-color-scheme: dark)").matches;
+}
+
+export function ThemeProvider({ children }: { children: ReactNode }) {
+  // Start from the default on both server and first client render to avoid
+  // hydration mismatches; the persisted value is loaded post-mount.
+  const [theme, setThemeState] = useState<Theme>("system");
+  const [prefersDark, setPrefersDark] = useState(false);
+
+  useEffect(() => {
     try {
-      const v = localStorage.getItem(STORAGE_KEY) as Theme | null;
-      return v ?? "system";
+      const saved = localStorage.getItem(THEME_STORAGE_KEY) as Theme | null;
+      if (saved) setThemeState(saved);
     } catch {
-      return "system";
+      // ignore
     }
-  });
+    setPrefersDark(getSystemPrefersDark());
+  }, []);
 
-  const [prefersDark, setPrefersDark] = useState(() => {
-    if (typeof window === "undefined" || !window.matchMedia) return false;
-    return window.matchMedia("(prefers-color-scheme: dark)").matches;
-  });
+  const resolved: "light" | "dark" =
+    theme === "system" ? (prefersDark ? "dark" : "light") : theme;
 
-  const resolved = theme === "system" ? (prefersDark ? "dark" : "light") : theme;
-
-  useEffect(() => {
+  const setTheme = (t: Theme) => {
+    setThemeState(t);
     try {
-      localStorage.setItem(STORAGE_KEY, theme);
-    } catch {}
-  }, [theme]);
-
-  useEffect(() => {
-    const apply = (mode: "light" | "dark") => {
-      document.documentElement.setAttribute("data-theme", mode);
-    };
-
-    apply(resolved);
-
-    if (typeof window !== "undefined" && window.matchMedia) {
-      const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-      const handler = (event: MediaQueryListEvent) => {
-        setPrefersDark(event.matches);
-        if (theme === "system") {
-          apply(event.matches ? "dark" : "light");
-        }
-      };
-
-      if (theme === "system") {
-        if (mediaQuery.addEventListener) {
-          mediaQuery.addEventListener("change", handler);
-          return () => mediaQuery.removeEventListener("change", handler);
-        }
-
-        mediaQuery.addListener(handler);
-        return () => mediaQuery.removeListener(handler);
-      }
+      localStorage.setItem(THEME_STORAGE_KEY, t);
+    } catch {
+      // ignore
     }
-    return;
-  }, [resolved, theme]);
+  };
+
+  // Reflect the resolved theme on <html> for CSS.
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", resolved);
+  }, [resolved]);
+
+  // Keep "system" in sync with OS preference changes.
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.matchMedia) return;
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const handler = (event: MediaQueryListEvent) => setPrefersDark(event.matches);
+    mediaQuery.addEventListener("change", handler);
+    return () => mediaQuery.removeEventListener("change", handler);
+  }, []);
 
   const value: ThemeContextType = {
     theme,
     resolved,
     setTheme,
-    toggle: () => setTheme((t) => (t === "dark" ? "light" : "dark")),
+    toggle: () => setTheme(resolved === "dark" ? "light" : "dark"),
   };
 
-  return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
+  return (
+    <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
+  );
 }
 
 export function useTheme() {

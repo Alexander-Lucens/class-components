@@ -1,16 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
-import counterReducer from "./features/counterSlice";
 import selectionReducer from "./features/selectionSlice";
-import type { RootState as AppRootState } from "./types/store";
 
-export const store = configureStore({
-  reducer: {
-    counter: counterReducer,
-    selection: selectionReducer,
-  },
-});
+export const makeStore = () =>
+  configureStore({
+    reducer: {
+      selection: selectionReducer,
+    },
+  });
 
-export type RootState = AppRootState;
-export type AppDispatch = typeof store.dispatch;
-
-export default store;
+export type AppStore = ReturnType<typeof makeStore>;
+export type RootState = ReturnType<AppStore["getState"]>;
+export type AppDispatch = AppStore["dispatch"];

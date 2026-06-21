@@ -3,28 +3,30 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://olucens.github.io/class-components",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
     "lint": "eslint .",
-    "preview": "vite preview",
+    "type-check": "tsc --noEmit",
     "format:fix": "prettier --write .",
-    "test": "vitest",
+    "test": "vitest run",
     "test:ui": "vitest --ui",
-    "test:coverage": "vitest --coverage",
-    "test:watch": "vitest --watch",
-    "prepare": "husky install"
+    "test:coverage": "vitest run --coverage",
+    "test:watch": "vitest",
+    "prepare": "husky"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.12.0",
+    "next": "^16.2.9",
+    "next-intl": "^4.13.0",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
-    "react-redux": "^9.3.0",
-    "react-router-dom": "^7.15.1"
+    "react-redux": "^9.3.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",
+    "@next/eslint-plugin-next": "^16.2.9",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
@@ -40,7 +42,6 @@
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.1.1",
-    "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.5.0",
     "husky": "^8.0.0",
     "jsdom": "^29.1.1",

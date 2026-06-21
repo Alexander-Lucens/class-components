@@ -1,20 +1,35 @@
-import '@testing-library/jest-dom'
+import "@testing-library/jest-dom";
 
-// Simple localStorage mock to ensure deterministic tests
+// Deterministic localStorage mock.
 const localStorageMock = (() => {
-  let store: Record<string, string> = {}
+  let store: Record<string, string> = {};
   return {
     getItem: (key: string) => (key in store ? store[key] : null),
     setItem: (key: string, value: string) => {
-      store[key] = String(value)
+      store[key] = String(value);
     },
     removeItem: (key: string) => {
-      delete store[key]
+      delete store[key];
     },
     clear: () => {
-      store = {}
-    }
-  }
-})()
+      store = {};
+    },
+  };
+})();
 
-Object.defineProperty(window, 'localStorage', { value: localStorageMock })
+Object.defineProperty(window, "localStorage", { value: localStorageMock });
+
+// jsdom does not implement matchMedia (needed by ThemeProvider).
+Object.defineProperty(window, "matchMedia", {
+  writable: true,
+  value: (query: string) => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addEventListener: () => {},
+    removeEventListener: () => {},
+    addListener: () => {},
+    removeListener: () => {},
+    dispatchEvent: () => false,
+  }),
+});

@@ -1,0 +1,60 @@
+{
+  "Header": {
+    "logo": "PokéSearch",
+    "home": "Home",
+    "about": "About"
+  },
+  "LocaleSwitcher": {
+    "label": "Language",
+    "en": "English",
+    "de": "Deutsch"
+  },
+  "Theme": {
+    "label": "Theme",
+    "system": "Auto",
+    "light": "Light",
+    "dark": "Dark"
+  },
+  "Search": {
+    "placeholder": "Search Pokémon...",
+    "button": "Search",
+    "refresh": "Refresh"
+  },
+  "Results": {
+    "noResults": "No Pokémon found",
+    "loading": "Loading…",
+    "prev": "Prev",
+    "next": "Next",
+    "page": "Page {page}",
+    "closeDetails": "Close details",
+    "selectAria": "Select {name}"
+  },
+  "Details": {
+    "refresh": "Refresh",
+    "notFound": "No Pokémon details found.",
+    "selectPrompt": "Select a Pokémon to see its details."
+  },
+  "About": {
+    "title": "About PokéSearch",
+    "courseHeading": "Course",
+    "course": "This application was created as part of the React course at <link>RS School</link>.",
+    "apiHeading": "Pokémon API",
+    "api": "All Pokémon data is fetched from the <link>PokéAPI</link>, a free and open-source Pokémon API.",
+    "authorHeading": "Created by",
+    "author": "This application was created by <link>olucens</link>."
+  },
+  "NotFound": {
+    "title": "404 — Page Not Found",
+    "message": "Sorry, the page you're looking for doesn't exist.",
+    "backHome": "Back to Home"
+  },
+  "Flyout": {
+    "selected": "{count} selected",
+    "unselectAll": "Unselect all",
+    "download": "Download"
+  },
+  "Error": {
+    "title": "Something went wrong",
+    "retry": "Try again"
+  }
+}

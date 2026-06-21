@@ -1,34 +1,52 @@
-import { render, screen } from '../../test-utils'
-import Card from '../Card'
-import userEvent from '@testing-library/user-event'
-import { describe, expect, it, vi } from 'vitest'
+import type { ReactNode } from "react";
+import { describe, expect, it, vi } from "vitest";
+import userEvent from "@testing-library/user-event";
+import { render, screen } from "../../test-utils";
+import Card from "../Card";
 
+vi.mock("../../i18n/navigation", () => ({
+  Link: ({
+    children,
+    className,
+  }: {
+    children?: ReactNode;
+    href?: unknown;
+    className?: string;
+  }) => <a className={className}>{children}</a>,
+}));
 
-describe('Card', () => {
-  it('renders name, id and image alt', () => {
-    render(<Card name="Bulbasaur" url="https://pokeapi.co/api/v2/pokemon/1/" description="Seed Pokémon" />)
+vi.mock("next/image", () => ({
+  default: ({ alt, src }: { alt: string; src: string }) => (
+    <img alt={alt} src={src} />
+  ),
+}));
 
-    expect(screen.getByText('Bulbasaur')).toBeInTheDocument()
-    expect(screen.getByText('#1')).toBeInTheDocument()
-    expect(screen.getByAltText('Bulbasaur')).toBeInTheDocument()
-    expect(screen.getByText('Seed Pokémon')).toBeInTheDocument()
-  })
+const props = {
+  name: "bulbasaur",
+  url: "https://pokeapi.co/api/v2/pokemon/1/",
+  description: "Seed Pokémon",
+  detailsQuery: { details: "bulbasaur" },
+  active: false,
+};
 
-  it('toggles checkbox without triggering card click', async () => {
-    const onClick = vi.fn()
-    const user = userEvent.setup()
+describe("Card", () => {
+  it("renders name, id, image and description", () => {
+    render(<Card {...props} />);
+    expect(screen.getByText("bulbasaur")).toBeInTheDocument();
+    expect(screen.getByText("#1")).toBeInTheDocument();
+    expect(screen.getByAltText("bulbasaur")).toBeInTheDocument();
+    expect(screen.getByText("Seed Pokémon")).toBeInTheDocument();
+  });
 
-    render(<Card name="Bulbasaur" url="https://pokeapi.co/api/v2/pokemon/1/" description="Seed Pokémon" onClick={onClick} />)
+  it("toggles selection in the store via the checkbox", async () => {
+    const user = userEvent.setup();
+    const { store } = render(<Card {...props} />);
 
-    const checkbox = screen.getByRole('checkbox', { name: /select bulbasaur/i })
-    expect(checkbox).not.toBeChecked()
+    const checkbox = screen.getByRole("checkbox", { name: /select bulbasaur/i });
+    expect(checkbox).not.toBeChecked();
 
-    await user.click(checkbox)
-
-    expect(checkbox).toBeChecked()
-    expect(onClick).not.toHaveBeenCalled()
-
-    await user.click(screen.getByText('Bulbasaur'))
-    expect(onClick).toHaveBeenCalledWith('Bulbasaur')
-  })
-})
+    await user.click(checkbox);
+    expect(checkbox).toBeChecked();
+    expect(store.getState().selection.items.bulbasaur).toBeDefined();
+  });
+});

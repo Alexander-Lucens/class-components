@@ -1,62 +1,45 @@
-import { useTheme } from "../context/ThemeContext";
+"use client";
 
-const images: Record<string, Record<string, string>> = {
-  'light': {
-    'light': "https://img.icons8.com/ios/50/sun--v1.png",
-    'dark': "https://img.icons8.com/ios/50/do-not-disturb-2.png"
-  },
-  'dark': {
-    'light': "https://img.icons8.com/ios/50/FFFFFF/sun--v1.png",
-    'dark': "https://img.icons8.com/ios/50/FFFFFF/do-not-disturb-2.png"
-  }
-};
+import { useTranslations } from "next-intl";
+import { Link } from "../i18n/navigation";
+import { useTheme } from "../context/ThemeContext";
+import LocaleSwitcher from "./LocaleSwitcher";
+
+const THEME_OPTIONS = ["system", "light", "dark"] as const;
 
 export default function Header() {
-  const { theme, setTheme, resolved } = useTheme();
-
-  const currentImages = images[resolved] || images['light'];
+  const t = useTranslations("Header");
+  const tTheme = useTranslations("Theme");
+  const { theme, setTheme } = useTheme();
 
   return (
     <header className="header">
       <div className="width-wrapper">
         <div className="header__inner">
-          <a href="/" style={{ textDecoration: "none", color: "inherit" }}>
-            <span className="header__logo">⚡ PokéSearch</span>
-          </a>
+          <Link href="/" className="header__logo">
+            ⚡ {t("logo")}
+          </Link>
           <nav className="header__nav">
-            <a href="/" style={{ marginRight: "20px", textDecoration: "none" }}>
-              Home
-            </a>
-            <a href="/about" style={{ textDecoration: "none" }}>
-              About
-            </a>
-            <div className="theme-switcher" aria-label="Theme switcher">
-              {(["system", "light", "dark"] as const).map((option) => (
+            <Link href="/" className="header__nav-link">
+              {t("home")}
+            </Link>
+            <Link href="/about" className="header__nav-link">
+              {t("about")}
+            </Link>
+            <LocaleSwitcher />
+            <div className="theme-switcher" aria-label={tTheme("label")}>
+              {THEME_OPTIONS.map((option) => (
                 <button
                   key={option}
                   type="button"
-                  className={`theme-switcher__button${theme === option ? " theme-switcher__button--active" : ""}`}
+                  className={`theme-switcher__button${
+                    theme === option ? " theme-switcher__button--active" : ""
+                  }`}
                   onClick={() => setTheme(option)}
-                  title={`Switch to ${option} theme`}
+                  title={tTheme(option)}
                   aria-pressed={theme === option}
                 >
-                  {option === "system" ? (
-                  "Auto"
-                ) : option === "light" ? (
-                  <img
-                    width="20"
-                    height="20"
-                    src={currentImages.light}
-                    alt={`${option}-${theme}`}
-                  />
-                ) : (
-                  <img
-                    width="20"
-                    height="20"
-                    src={currentImages.dark}
-                    alt={`${option}-${theme}`}
-                  />
-                )}
+                  {tTheme(option)}
                 </button>
               ))}
             </div>
