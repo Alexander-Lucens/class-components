@@ -1,3 +1,5 @@
+"use client";
+
 import { useMemo } from "react";
 import { useAppDispatch, useAppSelector } from "../hooks/redux";
 import { clearSelection, selectSelectedItems } from "../features/selectionSlice";
